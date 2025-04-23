@@ -1,0 +1,85 @@
+name: Verify and Extract Performance
+
+on:
+  push:
+    paths:
+      - '**/*.gz'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps: 
+    
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+      # checkout is used here as its more clean and it guarrantees that we get the version we want and that all context is maintained.
+    - name: Checkout Verifier Repository
+      uses: actions/checkout@v4
+      with:
+        repository: GraphVertexColoring/coloring-verifier
+        path: coloring-verifier  # Clone this into a subdirectory
+    
+    - name: Checkout gvc-instances
+      uses: actions/checkout@v4
+      with:
+        repository: GraphVertexColoring/gvc-instances
+        path: gvc-instances
+    
+    - name: Set up Make and GCC
+      run: sudo apt-get install build-essentials # this ensures make and gcc are installed
+    
+    - name: Build Verifier
+      run: |
+        cd coloring-verifier/src
+        make CC=gcc
+
+    - name: Verify solutions
+      run: # script here
+  
+
+  extract_performance:
+    needs: verify
+    run-on: ubuntu-latest
+    steps: 
+    - name: Checkout data-archive
+      uses: actions/checkout@v4
+
+    - name: Checkout Performance Extractor Repository
+      uses: actions/checkout@v4
+      with:
+        repository: GraphVertexColoring/gvc-perf
+        path: gvc-perf
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with: 
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        cd gvc-perf
+        pip install -r requirements.txt
+    
+    - name: Extract Performance
+      run: |
+        cd performance-extraction
+        python performance_extractor False
+        python performance_extractor True
+
+    - name: Clone coloring Repository
+      run: |
+        git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
+    
+    - name: Copy Results to coloring Repository
+      run: |
+        cp ./Resources/*.csv coloring/Resources/
+    
+    - name: Push Results to coloring Repo
+      run: |
+        cd coloring
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add Resources/Performance/
+        git commit -m "Automated Performance Extraction Results" || echo "No changes to commit" 
+        git push origin master
