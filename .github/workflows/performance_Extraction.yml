@@ -88,7 +88,6 @@ jobs:
     
     - name: Extract Performance
       run: |
-        cd gvc-perf
         python performance_extractor False
         python performance_extractor True
 
