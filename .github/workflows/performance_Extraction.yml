@@ -40,8 +40,6 @@ jobs:
         make CC=gcc
         chmod +x coloring-verifier
 
-
-
     - name: Verify solutions
       run: | # script here that runs per algo in the Algos directory
         # figure out a valid "old" reference for diff
@@ -89,8 +87,8 @@ jobs:
         git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
     
     - name: Extract Performance
+      working-directory: gvc-perf
       run: |
-        cd..
         python performance_extractor False
         python performance_extractor True
 
