@@ -62,9 +62,11 @@ jobs:
         done
 
   extract_performance:
-    needs: verify
     run-on: ubuntu-latest
+    needs: verify
+    
     steps: 
+
     - name: Checkout data-archive
       uses: actions/checkout@v4
 
