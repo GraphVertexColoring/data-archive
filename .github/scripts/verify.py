@@ -31,7 +31,7 @@ def verify(algo_path):
     unzip_gz_file(col_gz, col)
 
     result = subprocess.run([
-        "./coloring-verifier",
+        "./coloring-verifier/src/coloring-verifier",
         "-i", col,
         "-s", sol,
         "-p", "coloring"
