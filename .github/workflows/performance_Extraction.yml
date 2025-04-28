@@ -34,10 +34,6 @@ jobs:
       with: 
         python-version: '3.10'
 
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
-
     - name: Build Verifier
       run: |
         cd coloring-verifier/src
