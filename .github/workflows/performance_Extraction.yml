@@ -67,7 +67,6 @@ jobs:
     needs: verify
     
     steps: 
-
     - name: Checkout data-archive
       uses: actions/checkout@v4
 
@@ -88,6 +87,7 @@ jobs:
     
     - name: Extract Performance
       run: |
+        cd..
         python performance_extractor False
         python performance_extractor True
 
