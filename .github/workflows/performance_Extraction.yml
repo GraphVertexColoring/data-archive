@@ -41,13 +41,19 @@ jobs:
 
     - name: Verify solutions
       run: | # script here that runs per algo in the Algos directory
-        # Get list of the modified or new algo results only.
-        changed_dirs=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep '^Algos/' | awk -F/ '{print $2"/"$3}' | sort -u)
-
-        if [ -z "$changed_dirs" ]; then 
-          echo "No new or modified solutions found in Algos/. Skipping verification."
-          exit 0
+        # figure out a valid "old" reference for diff
+        if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
+          base=HEAD~1
+        else
+          # empty tree hash: treat this as the very first diff
+          base=$(git hash-object -t tree /dev/null)
         fi
+
+        # find new or modified Algos
+        changed_dirs=$(git diff --name-only --diff-filter=AM "$base" HEAD \
+                      | grep '^Algos/' \
+                      | awk -F/ '{print $2"/"$3}' \
+                      | sort -u)
 
         echo "Running verification on updated solutions..."
 
@@ -79,11 +85,6 @@ jobs:
     - name: Clone coloring Repository
       run: |
         git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
-
-    - name: Install Dependencies
-      run: |
-        cd gvc-perf
-        pip install -r requirements.txt
     
     - name: Extract Performance
       run: |
