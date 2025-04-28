@@ -20,27 +20,31 @@ def cleanup_files(*files):
 
 # method that calls the coloring-verifier
 def verify(algo_path):
-    sol_path = f"{algo_path}.sol"
-    col_path = f"{algo_path}.col"
+    name    = os.path.basename(algo_path)
+    sol_gz  = f"{algo_path}.sol.gz"
+    sol     = f"{algo_path}.sol"
+    col_gz  = os.path.join("gvc-instances/Instances", f"{name}.col.gz")
+    col     = os.path.join("gvc-instances/Instances", f"{name}.col")
 
-    unzip_gz_file(f"{sol_path}.gz", sol_path)
-    unzip_gz_file(f"{col_path}.gz", col_path)
+    # Unzip
+    unzip_gz_file(sol_gz, sol)
+    unzip_gz_file(col_gz, col)
 
     result = subprocess.run([
         "./coloring-verifier",
-        "-i", col_path,
-        "-s", sol_path,
+        "-i", col,
+        "-s", sol,
         "-p", "coloring"
     ], capture_output=True, text=True)
 
-    print(f"Return code for {sol_path}: {result.returncode}")
+    print(f"Return code for {sol}: {result.returncode}")
     if result.returncode != 0:
-        print(f"Verification failed for {sol_path}")
+        print(f"Verification failed for {sol}")
         print(result.stdout)
-        cleanup_files(sol_path,col_path)
+        cleanup_files(sol,col)
         return False
     
-    cleanup_files(sol_path,col_path)
+    cleanup_files(sol,col)
     return True
     
 def main():
