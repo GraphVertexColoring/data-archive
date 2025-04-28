@@ -27,9 +27,8 @@ jobs:
         path: gvc-instances
     
     - name: Set up Make and GCC
-      run: sudo apt-get install build-essentials # this ensures make and gcc are installed
+      run: sudo apt-get install build-essential # this ensures make and gcc are installed
     
-        
     - name: Set up Python
       uses: actions/setup-python@v5
       with: 
