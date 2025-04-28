@@ -29,14 +29,37 @@ jobs:
     - name: Set up Make and GCC
       run: sudo apt-get install build-essentials # this ensures make and gcc are installed
     
+        
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with: 
+        python-version: '3.10'
+
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+
     - name: Build Verifier
       run: |
         cd coloring-verifier/src
         make CC=gcc
 
     - name: Verify solutions
-      run: # script here
-  
+      run: | # script here that runs per algo in the Algos directory
+        # Get list of the modified or new algo results only.
+        changed_dirs=$(git diff --name-only --diff-filter=AM HEAD~1 HEAD | grep '^Algos/' | awk -F/ '{print $2"/"$3}' | sort -u)
+
+        if [ -z "$changed_dirs" ]; then 
+          echo "No new or modified solutions found in Algos/. Skipping verification."
+          exit 0
+        fi
+
+        echo "Running verification on updated solutions..."
+
+        for dir in $changed_dirs; do
+          echo "Verifying solutions in Algos/$dir..."
+          python .github/scripts/verify.py "Algos/$dir" 
+        done
 
   extract_performance:
     needs: verify
@@ -56,6 +79,10 @@ jobs:
       with: 
         python-version: '3.10'
 
+    - name: Clone coloring Repository
+      run: |
+        git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
+
     - name: Install Dependencies
       run: |
         cd gvc-perf
@@ -63,18 +90,15 @@ jobs:
     
     - name: Extract Performance
       run: |
-        cd performance-extraction
+        cd gvc-perf
         python performance_extractor False
         python performance_extractor True
 
-    - name: Clone coloring Repository
+    - name: Update Best
       run: |
-        git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
-    
-    - name: Copy Results to coloring Repository
-      run: |
-        cp ./Resources/*.csv coloring/Resources/
-    
+        python update_best.py
+      working-directory: .github/scripts
+
     - name: Push Results to coloring Repo
       run: |
         cd coloring
