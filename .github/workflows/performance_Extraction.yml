@@ -89,8 +89,8 @@ jobs:
     - name: Extract Performance
       working-directory: gvc-perf
       run: |
-        python performance_extractor False
-        python performance_extractor True
+        python performance_extractor.py False
+        python performance_extractor.py True
 
     - name: Update Best
       run: |
