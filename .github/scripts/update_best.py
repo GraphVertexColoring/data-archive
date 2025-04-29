@@ -1,13 +1,17 @@
 import os
 import csv
 from datetime import datetime
+import gzip
 
 BEST_CSV = os.path.join("..","..","coloring","Resources","best.csv")
 ALGOS_ROOT = os.path.join("..","..","Algos")
 
 def read_solution_file(filename):
-    with open(filename, 'r') as file:
-        return len(set(map(int, [line.split()[0] for line in file])))
+    open_fn = gzip.open if filename.endswith('.gz') else open
+    mode = 'rt' if filename.endswith('.gz') else 'r'
+    with open_fn(filename, mode) as file:
+        return len({int(line.split()[0]) for line in file if line.strip()})
+
 
 def load_best_solutions():
     best_solutions = {}
@@ -30,18 +34,25 @@ def update_best_solutions():
     for root, _, files in os.walk(ALGOS_ROOT):
         algorithm = os.path.basename(root)
         for file in files:
-            if not file.endswith('.sol'):
+            if not (file.endswith('.sol') or file.endswith('.sol.gz')):
                 continue
 
             solution_file = os.path.join(root, file)
-            instance_name, _ = os.path.splitext(file)
+            if file.endswith('.sol.gz'):
+                instance_name = file[:-7]
+            else:
+                instance_name = file[:-4]
             instance = instance_name + ".col"
 
             new_bound = read_solution_file(solution_file)
             old_best, old_algo = best_solutions.get(instance, (float('inf'), 'Unknown'))
             # Should only replace if strictly better.
             if new_bound < old_best:
-                best_solutions[instance] = (new_bound,algorithm, datetime.now().isoformat())
+                best_solutions[instance] = (
+                    new_bound,
+                    algorithm,
+                    datetime.now().isoformat()
+                )
     
     with open(BEST_CSV, "w", newline='') as csvfile:
         fieldnames = ['Instance', 'Best', 'Algorithm', 'Last Improved']
