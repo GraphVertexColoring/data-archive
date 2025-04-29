@@ -7,10 +7,10 @@ def read_solution_file(filename):
 
 def load_best_solutions():
     best_solutions = {}
-    if not os.path.exists("../../coloring/Resources/best_solutions.csv"):
+    if not os.path.exists("../../coloring/Resources/best.csv"):
         return best_solutions
     
-    with open("../../coloring/Resources/best_solutions.csv", newline='') as csvfile:
+    with open("../../coloring/Resources/best.csv", newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             instance = row['Instance']
@@ -35,7 +35,7 @@ def update_best_solutions():
                     best_solutions[instance] = new_bound
                     algos[instance] = algorithm
     
-    with open("../../coloring/Resources/best_solutions.csv", "w", newline='') as csvfile:
+    with open("../../coloring/Resources/best.csv", "w", newline='') as csvfile:
         fieldnames = ['Instance', 'best', 'algorithm']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
