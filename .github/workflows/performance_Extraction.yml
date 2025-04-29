@@ -86,6 +86,7 @@ jobs:
       run: |
         git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
     
+    # Noticed a problem here where if you rerun it even with a non allowed instance it will still work since this doesnt only run on the new algorithms.
     - name: Extract Performance
       working-directory: gvc-perf
       run: |
