@@ -3,7 +3,7 @@ name: Verify and Extract Performance
 on:
   push:
     paths:
-      - '**/*.gz'
+      - 'Algos/**/*.gz'
 
 jobs:
   verify:
