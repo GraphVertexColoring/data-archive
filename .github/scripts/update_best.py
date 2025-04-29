@@ -45,7 +45,7 @@ def update_best_solutions():
             instance = instance_name + ".col"
 
             new_bound = read_solution_file(solution_file)
-            old_best, old_algo, old_timestamp = best_solutions.get(instance, (float('inf'), 'Unknown'))
+            old_best, old_algo, old_timestamp = best_solutions.get(instance, (float('inf'), 'Unknown', ''))
             # Should only replace if strictly better.
             if new_bound < old_best:
                 best_solutions[instance] = (
