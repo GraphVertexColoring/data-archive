@@ -102,6 +102,6 @@ jobs:
         cd coloring
         git config user.name "GitHub Actions"
         git config user.email "actions@github.com"
-        git add Resources/Performance/
+        git add Resources
         git commit -m "Automated Performance Extraction Results" || echo "No changes to commit" 
         git push origin master
