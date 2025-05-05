@@ -25,7 +25,8 @@ def load_best_solutions():
             best = int(row['Best'])
             algo = row.get('Algorithm', 'Unknown')
             old_timestamp = row.get('Last Improved', 'Unknown')
-            best_solutions[instance] = (best,algo, old_timestamp)
+            category = row.get('Category', '')
+            best_solutions[instance] = (best,algo, old_timestamp, category)
     return best_solutions
 
 def update_best_solutions():
@@ -45,7 +46,7 @@ def update_best_solutions():
             instance = instance_name + ".col"
 
             new_bound = read_solution_file(solution_file)
-            old_best, old_algo, old_timestamp = best_solutions.get(instance, (float('inf'), 'Unknown', ''))
+            old_best, old_algo, old_timestamp, category = best_solutions.get(instance, (float('inf'), 'Unknown', ''))
             # Should only replace if strictly better.
             if new_bound < old_best:
                 best_solutions[instance] = (
@@ -55,16 +56,17 @@ def update_best_solutions():
                 )
     
     with open(BEST_CSV, "w", newline='') as csvfile:
-        fieldnames = ['Instance', 'Best', 'Algorithm', 'Last Improved']
+        fieldnames = ['Instance', 'Best', 'Algorithm', 'Last Improved', 'Category']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
-        for instance, (best, algo, ts) in sorted(best_solutions.items()):
+        for instance, (best, algo, ts, category) in sorted(best_solutions.items()):
             writer.writerow({
                 'Instance': instance, 
                 'Best': best, 
                 'Algorithm': algo,
-                'Last Improved': ts
+                'Last Improved': ts,
+                'Category': category
             })
 
 if __name__ == "__main__":
