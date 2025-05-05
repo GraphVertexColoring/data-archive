@@ -46,13 +46,13 @@ def update_best_solutions():
             instance = instance_name + ".col"
 
             new_bound = read_solution_file(solution_file)
-            old_best, old_algo, old_timestamp, category = best_solutions.get(instance, (float('inf'), 'Unknown', ''))
+            old_best, old_algo, old_timestamp, category = best_solutions.get(instance, (float('inf'), 'Unknown', 'Unknown', ''))
             # Should only replace if strictly better.
             if new_bound < old_best:
                 best_solutions[instance] = (
                     new_bound,
                     algorithm,
-                    datetime.now().isoformat()
+                    datetime.now().strftime('%Y-%m-%d')
                 )
     
     with open(BEST_CSV, "w", newline='') as csvfile:
