@@ -63,6 +63,16 @@ jobs:
           python .github/scripts/verify.py "Algos/$dir" 
         done
 
+    - name: Commit and Push Changes
+      if: success() # Should only do this if the previous steps succeeded.
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add Algos
+        git commit -m "updates the algos to remove the invalid solutions" || exit 0
+        git push
+
+
   extract_performance:
     runs-on: ubuntu-latest
     needs: verify
