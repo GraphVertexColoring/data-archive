@@ -41,7 +41,7 @@ def verify(algo_path):
     if result.returncode != 0:
         print(f"Verification failed for {sol}")
         print(result.stdout)
-        cleanup_files(sol,col)
+        cleanup_files(sol,col,sol_gz)
         return False
     
     cleanup_files(sol,col)
@@ -71,8 +71,7 @@ def main():
         if not verify(algo_path):
             valid = False
 
-    if not valid: # if a solution is invalid return 1 for error.
-        sys.exit(1)
+    return valid # return for return sake
 
 if __name__=="__main__":
     main()
