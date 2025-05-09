@@ -77,11 +77,6 @@ jobs:
       with:
         repository: GraphVertexColoring/gvc-perf
         path: gvc-perf
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with: 
-        python-version: '3.10'
 
     - name: Clone coloring Repository
       run: |
