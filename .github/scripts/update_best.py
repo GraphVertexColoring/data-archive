@@ -52,7 +52,8 @@ def update_best_solutions():
                 best_solutions[instance] = (
                     new_bound,
                     algorithm,
-                    datetime.now().strftime('%Y-%m-%d')
+                    datetime.now().strftime('%Y-%m-%d'),
+                    category
                 )
     
     with open(BEST_CSV, "w", newline='') as csvfile:
