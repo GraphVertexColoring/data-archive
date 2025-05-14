@@ -78,9 +78,12 @@ jobs:
         repository: GraphVertexColoring/gvc-perf
         path: gvc-perf
 
-    - name: Clone coloring Repository
-      run: |
-        git clone https://x-access-token:${{ secrets.ORG_PAT }}@github.com/GraphVertexColoring/coloring.git
+    - name: Checkout coloring Repository
+      uses: actions/checkout@v4
+      with:
+        repository: GraphVertexColoring/coloring
+        token: ${{ secrets.ORG_PAT }}
+        path: coloring
     
     # Noticed a problem here where if you rerun it even with a non allowed instance it will still work since this doesnt only run on the new algorithms.
     - name: Extract Performance
