@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - 'Algos/**/*.gz'
-
-
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -50,8 +48,9 @@ jobs:
         fi
 
         # find new or modified solutions withing the directories under Algos
+        # supports up to 9 different run folders
         changed_dirs=$(git diff --name-only --diff-filter=AM "$base" HEAD \
-                      | grep '^Algos/run[1-9]\+/' \ # supports up to 9 different run folders
+                      | grep '^Algos/run[1-9]\+/' \ 
                       | grep '\.sol\.gz$' \
                       | awk -F/ '{print $2"/"$3}' \
                       | sort -u)
