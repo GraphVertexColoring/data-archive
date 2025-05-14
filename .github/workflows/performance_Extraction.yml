@@ -41,18 +41,17 @@ jobs:
         chmod +x coloring-verifier
 
     - name: Verify solutions
-      run: | # script here that runs per algo in the Algos directory
-        # figure out a valid "old" reference for diff
+      run: | # ensures verification only happens on newly added solutions
         if git rev-parse --verify HEAD~1 >/dev/null 2>&1; then
           base=HEAD~1
         else
-          # empty tree hash: treat this as the very first diff
           base=$(git hash-object -t tree /dev/null)
         fi
 
-        # find new or modified Algos
+        # find new or modified solutions withing the directories under Algos
         changed_dirs=$(git diff --name-only --diff-filter=AM "$base" HEAD \
-                      | grep '^Algos/' \
+                      | grep '^Algos/run[1-9]\+/' \ # supports up to 9 different run folders
+                      | grep '\.sol\.gz$' \
                       | awk -F/ '{print $2"/"$3}' \
                       | sort -u)
 
