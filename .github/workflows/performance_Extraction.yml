@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'Algos/**/*.gz'
+  workflow_dispatch:
 
 jobs:
   verify:
